@@ -208,9 +208,13 @@ function render() {
 }
 
 function toggle(cod, mi) {
-  var CAT = DATA.maquinas[parseInt(mi)].repuestos;
   var r = null;
-  CAT.forEach(function(x) { if (x.cod === cod) r = x; });
+  var idx = parseInt(mi);
+  if (idx === -1) {
+    DATA.maquinas.forEach(function(m) { m.repuestos.forEach(function(x) { if (x.cod === cod) r = x; }); });
+  } else {
+    DATA.maquinas[idx].repuestos.forEach(function(x) { if (x.cod === cod) r = x; });
+  }
   if (!r) return;
   if (cart[cod]) delete cart[cod];
   else cart[cod] = {r: r, qty: 1};
