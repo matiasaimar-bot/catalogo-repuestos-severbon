@@ -18,7 +18,19 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .toolbar{padding:10px 16px;display:flex;gap:7px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #E2E5EA}
 .toolbar input{flex:1;min-width:150px;font-size:12px;padding:7px 10px;border:1px solid #E2E5EA;border-radius:5px;outline:none}
 .fbtn{font-size:11px;padding:6px 12px;border:1px solid #E2E5EA;border-radius:5px;background:#fff;cursor:pointer}
-.fbtn.on{background:#E6F1FB;color:#1B6CA8;border-color:#1B6CA8;font-weight:700}@media(max-width:600px){.toolbar{padding:6px 8px;gap:4px;flex-wrap:wrap}.toolbar input{min-width:0;width:100%;flex:1 1 100%;font-size:12px}.fbtn{font-size:10px;padding:4px 7px}.sidebar{width:120px}.maq-btn{font-size:11px;padding:8px 8px}.card-nom{font-size:11px}.card-cod{font-size:10px}}
+.fbtn.on{background:#E6F1FB;color:#1B6CA8;border-color:#1B6CA8;font-weight:700}@media(max-width:600px){
+  .sidebar{display:none}
+  .maq-bar{display:flex!important}
+  .maq-dropdown{display:block}
+  .toolbar{padding:6px 8px;gap:4px;flex-wrap:nowrap;overflow-x:auto}
+  .toolbar input{min-width:0;width:100%;flex:1 1 100%;font-size:12px;margin-bottom:4px}
+  .fbtn{font-size:10px;padding:5px 10px;white-space:nowrap;flex-shrink:0}
+  .toolbar-inner{display:flex;flex-direction:column;width:100%}
+  .fbtn-row{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
+  .card-nom{font-size:11px}
+  .card-cod{font-size:10px}
+  .layout{min-height:calc(100vh - 140px)}
+}
 .grid{padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
 .card{background:#fff;border:1px solid #E2E5EA;border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
 .card:hover{box-shadow:0 2px 10px rgba(0,0,0,.08)}
@@ -66,6 +78,22 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .maq-btn.active{background:#E6F1FB;color:#1B6CA8;border-left-color:#1B6CA8;font-weight:700}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
+
+.maq-bar{display:none;align-items:center;justify-content:space-between;background:#F0F6FC;border-bottom:1px solid #B5D4F4;padding:7px 14px;cursor:pointer}
+.maq-bar-label{font-size:11px;color:#1B6CA8}
+.maq-bar-name{font-size:13px;font-weight:700;color:#1B6CA8}
+.maq-bar-icon{display:flex;flex-direction:column;gap:3px}
+.maq-bar-icon span{display:block;width:18px;height:2px;background:#1B6CA8;border-radius:1px}
+.maq-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);z-index:100}
+.maq-overlay.open{display:block}
+.maq-panel{position:fixed;top:0;left:0;right:0;background:#fff;z-index:101;box-shadow:0 4px 20px rgba(0,0,0,.15);border-radius:0 0 12px 12px;transform:translateY(-100%);transition:transform .25s ease}
+.maq-panel.open{transform:translateY(0)}
+.maq-panel-head{background:#1B6CA8;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.maq-panel-head span{color:#fff;font-size:13px;font-weight:700}
+.maq-panel-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;padding:0}
+.maq-panel-item{display:block;width:100%;text-align:left;padding:14px 16px;border:none;background:transparent;font-size:14px;cursor:pointer;border-bottom:1px solid #E2E5EA}
+.maq-panel-item.active{background:#E6F1FB;color:#1B6CA8;font-weight:700}
+.maq-panel-item:last-child{border-bottom:none}
 </style>
 </head>
 <body>
@@ -81,6 +109,21 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
     </button>
   </div>
 </div>
+<div class="maq-bar" id="maq-bar" onclick="openMaqPanel()">
+  <div>
+    <div class="maq-bar-label">Maquina</div>
+    <div class="maq-bar-name" id="maq-bar-name">Desmalezadora DSV-52</div>
+  </div>
+  <div class="maq-bar-icon"><span></span><span></span><span></span></div>
+</div>
+<div class="maq-overlay" id="maq-overlay" onclick="closeMaqPanel()"></div>
+<div class="maq-panel" id="maq-panel">
+  <div class="maq-panel-head">
+    <span>Seleccionar maquina</span>
+    <button class="maq-panel-close" onclick="closeMaqPanel()">&#10005;</button>
+  </div>
+  <div id="maq-panel-list"></div>
+</div>
 <div class="layout">
   <div class="sidebar">
     <div class="sidebar-title">Maquinas</div>
@@ -88,12 +131,16 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
   </div>
   <div class="main">
     <div class="toolbar">
-      <input type="text" id="q" placeholder="Buscar por nombre o codigo..." oninput="render()">
-      <button class="fbtn on" id="fb-todos" onclick="setFam('todos')">Todos</button>
-      <button class="fbtn" id="fb-motor" onclick="setFam('motor')">Motor</button>
-      <button class="fbtn" id="fb-transmision" onclick="setFam('transmision')">Transmision</button>
-      <button class="fbtn" id="fb-corte" onclick="setFam('corte')">Corte</button>
-      <button class="fbtn" id="fb-kit" onclick="setFam('kit')">Kits</button>
+      <div class="toolbar-inner">
+        <input type="text" id="q" placeholder="Buscar por nombre o codigo..." oninput="render()">
+        <div class="fbtn-row">
+          <button class="fbtn on" id="fb-todos" onclick="setFam('todos')">Todos</button>
+          <button class="fbtn" id="fb-motor" onclick="setFam('motor')">Motor</button>
+          <button class="fbtn" id="fb-transmision" onclick="setFam('transmision')">Transmision</button>
+          <button class="fbtn" id="fb-corte" onclick="setFam('corte')">Corte</button>
+          <button class="fbtn" id="fb-kit" onclick="setFam('kit')">Kits</button>
+        </div>
+      </div>
     </div>
     <div class="grid" id="grid"></div>
   </div>
@@ -251,7 +298,23 @@ function descargar() {
   doc += 'table{width:100%;border-collapse:collapse;margin-top:20px}';
   doc += 'th{background:#1B6CA8;color:#fff;padding:9px 12px;text-align:left;font-size:12px}';
   doc += '.datos{background:#f7f8fa;padding:14px;border-radius:8px;margin:16px 0;font-size:13px;line-height:1.8}';
-  doc += '.nota{margin-top:24px;font-size:12px;color:#999;border-top:1px solid #eee;padding-top:16px}</style>';
+  doc += '.nota{margin-top:24px;font-size:12px;color:#999;border-top:1px solid #eee;padding-top:16px}
+.maq-bar{display:none;align-items:center;justify-content:space-between;background:#F0F6FC;border-bottom:1px solid #B5D4F4;padding:7px 14px;cursor:pointer}
+.maq-bar-label{font-size:11px;color:#1B6CA8}
+.maq-bar-name{font-size:13px;font-weight:700;color:#1B6CA8}
+.maq-bar-icon{display:flex;flex-direction:column;gap:3px}
+.maq-bar-icon span{display:block;width:18px;height:2px;background:#1B6CA8;border-radius:1px}
+.maq-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);z-index:100}
+.maq-overlay.open{display:block}
+.maq-panel{position:fixed;top:0;left:0;right:0;background:#fff;z-index:101;box-shadow:0 4px 20px rgba(0,0,0,.15);border-radius:0 0 12px 12px;transform:translateY(-100%);transition:transform .25s ease}
+.maq-panel.open{transform:translateY(0)}
+.maq-panel-head{background:#1B6CA8;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.maq-panel-head span{color:#fff;font-size:13px;font-weight:700}
+.maq-panel-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;padding:0}
+.maq-panel-item{display:block;width:100%;text-align:left;padding:14px 16px;border:none;background:transparent;font-size:14px;cursor:pointer;border-bottom:1px solid #E2E5EA}
+.maq-panel-item.active{background:#E6F1FB;color:#1B6CA8;font-weight:700}
+.maq-panel-item:last-child{border-bottom:none}
+</style>';
   doc += '</head><body>';
   doc += '<h1>Solicitud de repuestos - Severbon</h1><p style="color:#666;font-size:13px">Fecha: ' + fecha + '</p>';
   doc += '<div class="datos">Razon Social: ' + nom + '<br>CUIT: ' + cuit + '<br>Telefono: ' + tel + '<br>Email: ' + email + '</div>';
@@ -264,6 +327,29 @@ function descargar() {
 
 renderMaqList();
 render();
+
+function openMaqPanel() {
+  document.getElementById('maq-panel').classList.add('open');
+  document.getElementById('maq-overlay').classList.add('open');
+  renderMaqPanel();
+}
+function closeMaqPanel() {
+  document.getElementById('maq-panel').classList.remove('open');
+  document.getElementById('maq-overlay').classList.remove('open');
+}
+function renderMaqPanel() {
+  var html = '';
+  DATA.maquinas.forEach(function(m, i) {
+    html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+  });
+  document.getElementById('maq-panel-list').innerHTML = html;
+}
+function selMaqMobile(i) {
+  selMaq(i);
+  document.getElementById('maq-bar-name').textContent = DATA.maquinas[i].nom;
+  closeMaqPanel();
+}
+
 </script>
 </body>
 </html>
