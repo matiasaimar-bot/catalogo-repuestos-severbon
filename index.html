@@ -71,7 +71,7 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .ci-nom{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ci-cod{font-size:10px;font-family:monospace;color:#9098A9}
 .ci-qty{display:flex;align-items:center;gap:5px}
-.qbtn{width:26px;height:26px;border:1px solid #E2E5EA;border-radius:4px;background:#F7F8FA;cursor:pointer;font-size:14px;font-weight:700}
+.qbtn{width:26px;height:26px;border:1px solid #E2E5EA;border-radius:4px;background:#F7F8FA;cursor:pointer;font-size:14px;font-weight:700}.qinput{width:52px;text-align:center;border:1px solid #ddd;border-radius:4px;padding:4px 2px;font-size:14px;font-weight:600;-moz-appearance:textfield}.qinput::-webkit-outer-spin-button,.qinput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .qnum{font-size:13px;font-weight:700;min-width:22px;text-align:center}
 .del-btn{background:none;border:none;cursor:pointer;color:#9098A9;font-size:14px;padding:2px;font-weight:700}
 .cart-foot{padding:14px 16px;border-top:1px solid #E2E5EA}
@@ -243,9 +243,10 @@ function render() {
   });
   var html = '';
   items.forEach(function(r) {
-    var inc = !!cart[r.cod];
+    var cartItem = cart[r.cod];
+    var inc = !!cartItem && (cartItem.mi === maqIdx || cartItem.mi === -1 || maqIdx === -1);
     html += '<div class="card' + (inc ? ' in-cart' : '') + '">';
-    html += '<div class="card-img"><img src="' + r.img + '" alt="">' + (inc ? '<div class="dot">' + cart[r.cod].qty + '</div>' : '') + '</div>';
+    html += '<div class="card-img"><img src="' + r.img + '" alt="">' + (inc ? '<div class="dot">' + cartItem.qty + '</div>' : '') + '</div>';
     html += '<div class="card-body"><div class="card-cod">' + r.cod + '</div><div class="card-nom">' + r.nom + '</div>';
     html += '<button class="add-btn' + (inc ? ' added' : '') + '" data-cod="' + r.cod + '" data-mi="' + maqIdx + '">' + (inc ? '&#10003; Agregado' : '+ Agregar') + '</button>';
     html += '</div></div>';
@@ -269,7 +270,7 @@ function toggle(cod, mi) {
   }
   if (!r) return;
   if (cart[cod]) delete cart[cod];
-  else cart[cod] = {r: r, qty: 1};
+  else cart[cod] = {r: r, qty: 1, mi: idx};
   updateBadge();
   render();
 }
@@ -306,7 +307,7 @@ function renderCart() {
     html += '<div class="ci-info"><div class="ci-nom">' + it.r.nom + '</div><div class="ci-cod">' + cod + '</div></div>';
     html += '<div class="ci-qty">';
     html += '<button class="qbtn" onclick="chq(\'' + cod + '\',-1)">-</button>';
-    html += '<span class="qnum" id="qn-' + cod + '">' + it.qty + '</span>';
+    html += '<input class="qinput" id="qn-' + cod + '" type="number" min="1" value="' + it.qty + '" onchange="setQty(\'' + cod + '\',this.value)" oninput="setQty(\'' + cod + '\',this.value)">';
     html += '<button class="qbtn" onclick="chq(\'' + cod + '\',1)">+</button>';
     html += '</div>';
     html += '<button class="del-btn" onclick="del(\'' + cod + '\')">X</button>';
@@ -319,7 +320,15 @@ function chq(cod, d) {
   if (!cart[cod]) return;
   cart[cod].qty = Math.max(1, cart[cod].qty + d);
   var el = document.getElementById('qn-' + cod);
-  if (el) el.textContent = cart[cod].qty;
+  if (el) el.value = cart[cod].qty;
+}
+
+function setQty(cod, val) {
+  if (!cart[cod]) return;
+  var n = parseInt(val);
+  if (!n || n < 1) n = 1;
+  cart[cod].qty = n;
+  updateBadge();
 }
 
 function del(cod) {
