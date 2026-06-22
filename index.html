@@ -85,7 +85,7 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .layout{display:flex;min-height:calc(100vh - 110px)}
 .sidebar{width:200px;flex-shrink:0;background:#fff;border-right:1px solid #E2E5EA;padding:12px 0}
 .sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;color:#9098A9;padding:8px 14px 4px}
-.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}
+.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}.maq-group-header{display:block;width:100%;padding:8px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;color:#888;letter-spacing:0.05em;margin-top:8px}
 .maq-btn:hover{background:#F7F8FA}
 .maq-btn.active{background:#E6F1FB;color:#1B6CA8;border-left-color:#1B6CA8;font-weight:700}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -169,12 +169,37 @@ fetch('datos.json').then(function(r){return r.json();}).then(function(d){
   renderParts();
 });
 
-// Armar lista de maquinas
+// Armar lista de maquinas agrupada por categoria
 function renderMaqList() {
   var html = '<button class="maq-btn' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaq(-1)">Todas las maquinas</button>';
+
+  // Bordeadora y Desmalezadora primero
   DATA.maquinas.forEach(function(m, i) {
-    html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
+    if (m.id === 'dsv52' || m.id === 'bp1000') {
+      html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
+    }
   });
+
+  // Electricas
+  if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
+    html += '<div class="maq-group-header">El\u00e9ctricas</div>';
+    DATA.maquinas.forEach(function(m, i) {
+      if (m.cat === 'Electrica') {
+        html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
+      }
+    });
+  }
+
+  // Nafteras
+  if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
+    html += '<div class="maq-group-header">Nafteras</div>';
+    DATA.maquinas.forEach(function(m, i) {
+      if (m.cat === 'Naftera') {
+        html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
+      }
+    });
+  }
+
   document.getElementById('maq-list').innerHTML = html;
 }
 
