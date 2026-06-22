@@ -191,8 +191,8 @@ function renderMaqList() {
   // Electricas desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
     var abiertaE = gruposAbiertos.Electrica;
-    html += '<button class="maq-group-header" onclick="toggleGrupo('Electrica')">' +
-      'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '▲' : '▼') + '</span></button>';
+    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Electrica&quot;)">' +
+      'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '&#9650;' : '&#9660;') + '</span></button>';
     if (abiertaE) {
       DATA.maquinas.forEach(function(m, i) {
         if (m.cat === 'Electrica') {
@@ -205,8 +205,8 @@ function renderMaqList() {
   // Nafteras desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
     var abiertaN = gruposAbiertos.Naftera;
-    html += '<button class="maq-group-header" onclick="toggleGrupo('Naftera')">' +
-      'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '▲' : '▼') + '</span></button>';
+    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Naftera&quot;)">' +
+      'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '&#9650;' : '&#9660;') + '</span></button>';
     if (abiertaN) {
       DATA.maquinas.forEach(function(m, i) {
         if (m.cat === 'Naftera') {
