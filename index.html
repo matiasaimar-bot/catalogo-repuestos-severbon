@@ -26,12 +26,12 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .maq-bar-icon span{display:block;width:20px;height:2px;background:#1B6CA8;border-radius:1px}
 .maq-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:100}
 .maq-overlay.open{display:block}
-.maq-panel{position:fixed;top:0;left:0;right:0;background:#fff;z-index:101;border-radius:0 0 14px 14px;box-shadow:0 6px 24px rgba(0,0,0,.18);transform:translateY(-100%);transition:transform .25s ease}
+.maq-panel{position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:101;box-shadow:0 6px 24px rgba(0,0,0,.18);transform:translateY(-100%);transition:transform .25s ease;display:flex;flex-direction:column}
 .maq-panel.open{transform:translateY(0)}
 .maq-panel-head{background:#1B6CA8;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
 .maq-panel-head span{color:#fff;font-size:14px;font-weight:700}
 .maq-panel-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0}
-.maq-panel-item{display:block;width:100%;text-align:left;padding:15px 16px;border:none;background:transparent;font-size:14px;cursor:pointer;border-bottom:1px solid #E2E5EA;color:#1A1D23}
+#maq-panel-list{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding-bottom:40px}.maq-panel-item{display:block;width:100%;text-align:left;padding:15px 16px;border:none;background:transparent;font-size:14px;cursor:pointer;border-bottom:1px solid #E2E5EA;color:#1A1D23}
 .maq-panel-item.active{background:#E6F1FB;color:#1B6CA8;font-weight:700}
 .maq-panel-item:last-child{border-bottom:none}
 .fbtn-row{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
