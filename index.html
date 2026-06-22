@@ -175,6 +175,10 @@ var gruposAbiertos = { Electrica: false, Naftera: false };
 function toggleGrupo(cat) {
   gruposAbiertos[cat] = !gruposAbiertos[cat];
   renderMaqList();
+  // Si el panel mobile está abierto, actualizarlo también
+  if (document.getElementById('maq-panel').classList.contains('open')) {
+    openMaqPanel();
+  }
 }
 
 // Armar lista de maquinas agrupada por categoria con desplegables
@@ -372,12 +376,50 @@ function descargar() {
 
 function openMaqPanel() {
   var html = '<button class="maq-panel-item' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaqMobile(-1)">Todas las maquinas</button>';
+
+  // Bordeadora y Desmalezadora primero
   DATA.maquinas.forEach(function(m, i) {
-    html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+    if (m.id === 'dsv52' || m.id === 'bp1000') {
+      html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+    }
   });
+
+  // Electricas desplegable
+  if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
+    var abiertaE = gruposAbiertos.Electrica;
+    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Electrica&quot;)">' +
+      'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '&#9650;' : '&#9660;') + '</span></button>';
+    if (abiertaE) {
+      DATA.maquinas.forEach(function(m, i) {
+        if (m.cat === 'Electrica') {
+          html += '<button class="maq-panel-item maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+        }
+      });
+    }
+  }
+
+  // Nafteras desplegable
+  if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
+    var abiertaN = gruposAbiertos.Naftera;
+    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Naftera&quot;)">' +
+      'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '&#9650;' : '&#9660;') + '</span></button>';
+    if (abiertaN) {
+      DATA.maquinas.forEach(function(m, i) {
+        if (m.cat === 'Naftera') {
+          html += '<button class="maq-panel-item maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+        }
+      });
+    }
+  }
+
   document.getElementById('maq-panel-list').innerHTML = html;
   document.getElementById('maq-panel').classList.add('open');
   document.getElementById('maq-overlay').classList.add('open');
+}
+
+function toggleGrupoMobile(cat) {
+  gruposAbiertos[cat] = !gruposAbiertos[cat];
+  openMaqPanel();
 }
 function closeMaqPanel() {
   document.getElementById('maq-panel').classList.remove('open');
