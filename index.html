@@ -157,12 +157,17 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
     <button class="dl-btn" onclick="descargar()">Descargar pedido</button>
   </div>
 </div>
-<script id="d" type="application/json">{"maquinas":[{"id":"dsv52","nom":"Desmalezadora DSV-52","repuestos":[{"cod":"005009","nom":"Conjunto piston","fam":"motor","img":"img/005009.jpg"},{"cod":"005029","nom":"Conjunto de filtro de aire - Air Filter Assy","fam":"motor","img":"img/005029.jpg"},{"cod":"005013","nom":"Bobina encendido","fam":"motor","img":"img/005013.jpg"},{"cod":"005017","nom":"Ciguenhal Crank Shaft","fam":"motor","img":"img/005017.jpg"},{"cod":"005019","nom":"Carburador","fam":"motor","img":"img/005019.jpg"},{"cod":"005024","nom":"Bujia Spark Plug","fam":"motor","img":"img/005024.jpg"},{"cod":"005028","nom":"Cilindro","fam":"motor","img":"img/005028.jpg"},{"cod":"005140","nom":"Volante Flywheel DSV-52","fam":"motor","img":"img/005140.jpg"},{"cod":"005143","nom":"Engranajes arranque","fam":"motor","img":"img/005143.jpg"},{"cod":"005027","nom":"Eje motor Drive Shaft 1530mm","fam":"transmision","img":"img/005027.jpg"},{"cod":"005142","nom":"Embrague Clutch Pad","fam":"transmision","img":"img/005142.jpg"},{"cod":"999276","nom":"Caja transmision Output Block","fam":"transmision","img":"img/999276.jpg"},{"cod":"005177","nom":"Arnes DSV-52 Harness","fam":"transmision","img":"img/005177.jpg"},{"cod":"005026","nom":"Protector de carretel","fam":"corte","img":"img/005026.jpg"},{"cod":"005030","nom":"Cuchilla Blade","fam":"corte","img":"img/005030.jpg"},{"cod":"005178","nom":"Kit herramientas Tool Kit","fam":"kit","img":"img/005178.jpg"},{"cod":"005179","nom":"Kit reparacion carburador","fam":"kit","img":"img/005179.jpg"},{"cod":"005008","nom":"Conjunto cabezal Par conico - Gear Assy","fam":"transmision","img":"img/005008.jpg"},{"cod":"005022","nom":"Conjunto de arranque - Starter Assy","fam":"motor","img":"img/005022.jpg"},{"cod":"005016","nom":"Silenciador/Escape - Muffler","fam":"motor","img":"img/005016.jpg"},{"cod":"005012","nom":"Conjunto tanque de combustible - Fuel Tank Assy","fam":"motor","img":"img/005012.jpg"},{"cod":"005011","nom":"Carretel - Nylon Head","fam":"corte","img":"img/005011.jpg"}]},{"id":"bp1000","nom":"Bordeadora","repuestos":[{"cod":"038002","nom":"Carrito para apoyo de la bordeadora","fam":"transmision","img":"img/038002.jpg"},{"cod":"034173","nom":"Carcasa bordeadora amarilla c/ encastre motor","fam":"motor","img":"img/034173.jpg"},{"cod":"034164","nom":"Protector bordeadora grande BP 1000","fam":"corte","img":"img/034164.jpg"},{"cod":"034012","nom":"Protector bordeadora chico","fam":"corte","img":"img/034012.jpg"},{"cod":"043006","nom":"Cable bordeadora ARG PH6,35 s/traba","fam":"motor","img":"img/043006.jpg"},{"cod":"026066","nom":"Manija intermedia bordeadora armada","fam":"transmision","img":"img/026066.jpg"},{"cod":"073007","nom":"Motor bordeadora 1000W - 220V","fam":"motor","img":"img/073007.jpg"},{"cod":"034043","nom":"Manopla superior p/ bordeadora","fam":"transmision","img":"img/034043.jpg"},{"cod":"037005","nom":"Barral bordeadora negro","fam":"transmision","img":"img/037005.jpg"},{"cod":"999273","nom":"Carretel automatico Severbon p/bordeadora armado","fam":"corte","img":"img/999273.jpg"},{"cod":"031008","nom":"Tecla interruptor 652/2 p/bordeadora","fam":"motor","img":"img/031008.jpg"},{"cod":"034041","nom":"Gatillo de bordeadora","fam":"transmision","img":"img/034041.jpg"}]}]}</script>
+
 <script>
-var DATA = JSON.parse(document.getElementById('d').textContent);
+var DATA = null;
 var maqIdx = -1;
 var fam = 'todos';
 var cart = {};
+fetch('datos.json').then(function(r){return r.json();}).then(function(d){
+  DATA = d;
+  renderMaqList();
+  renderParts();
+});
 
 // Armar lista de maquinas
 function renderMaqList() {
@@ -314,9 +319,6 @@ function descargar() {
   var win = window.open('', '_blank');
   if (win) { win.document.write(doc); win.document.close(); setTimeout(function() { win.print(); }, 400); }
 }
-
-renderMaqList();
-render();
 
 function openMaqPanel() {
   var html = '<button class="maq-panel-item' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaqMobile(-1)">Todas las maquinas</button>';
