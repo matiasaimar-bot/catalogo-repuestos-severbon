@@ -85,7 +85,7 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .layout{display:flex;min-height:calc(100vh - 110px)}
 .sidebar{width:200px;flex-shrink:0;background:#fff;border-right:1px solid #E2E5EA;padding:12px 0}
 .sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;color:#9098A9;padding:8px 14px 4px}
-.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}.maq-group-header{display:block;width:100%;padding:8px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;color:#888;letter-spacing:0.05em;margin-top:8px}
+.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}.maq-group-header{display:block;width:100%;padding:10px 14px;font-size:12px;font-weight:700;text-transform:uppercase;color:#555;letter-spacing:0.05em;margin-top:4px;border:none;background:transparent;cursor:pointer;text-align:left;border-left:3px solid transparent}.maq-group-header:hover{background:#f0f0f0}.maq-group-arrow{float:right;font-size:10px}.maq-sub{padding-left:24px!important}
 .maq-btn:hover{background:#F7F8FA}
 .maq-btn.active{background:#E6F1FB;color:#1B6CA8;border-left-color:#1B6CA8;font-weight:700}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -169,35 +169,51 @@ fetch('datos.json').then(function(r){return r.json();}).then(function(d){
   renderParts();
 });
 
-// Armar lista de maquinas agrupada por categoria
+// Grupos desplegables abiertos/cerrados
+var gruposAbiertos = { Electrica: false, Naftera: false };
+
+function toggleGrupo(cat) {
+  gruposAbiertos[cat] = !gruposAbiertos[cat];
+  renderMaqList();
+}
+
+// Armar lista de maquinas agrupada por categoria con desplegables
 function renderMaqList() {
   var html = '<button class="maq-btn' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaq(-1)">Todas las maquinas</button>';
 
-  // Bordeadora y Desmalezadora primero
+  // Bordeadora y Desmalezadora primero (sin grupo)
   DATA.maquinas.forEach(function(m, i) {
     if (m.id === 'dsv52' || m.id === 'bp1000') {
       html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
     }
   });
 
-  // Electricas
+  // Electricas desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
-    html += '<div class="maq-group-header">El\u00e9ctricas</div>';
-    DATA.maquinas.forEach(function(m, i) {
-      if (m.cat === 'Electrica') {
-        html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
-      }
-    });
+    var abiertaE = gruposAbiertos.Electrica;
+    html += '<button class="maq-group-header" onclick="toggleGrupo('Electrica')">' +
+      'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '▲' : '▼') + '</span></button>';
+    if (abiertaE) {
+      DATA.maquinas.forEach(function(m, i) {
+        if (m.cat === 'Electrica') {
+          html += '<button class="maq-btn maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
+        }
+      });
+    }
   }
 
-  // Nafteras
+  // Nafteras desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
-    html += '<div class="maq-group-header">Nafteras</div>';
-    DATA.maquinas.forEach(function(m, i) {
-      if (m.cat === 'Naftera') {
-        html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
-      }
-    });
+    var abiertaN = gruposAbiertos.Naftera;
+    html += '<button class="maq-group-header" onclick="toggleGrupo('Naftera')">' +
+      'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '▲' : '▼') + '</span></button>';
+    if (abiertaN) {
+      DATA.maquinas.forEach(function(m, i) {
+        if (m.cat === 'Naftera') {
+          html += '<button class="maq-btn maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
+        }
+      });
+    }
   }
 
   document.getElementById('maq-list').innerHTML = html;
