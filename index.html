@@ -85,7 +85,7 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .layout{display:flex;min-height:calc(100vh - 110px)}
 .sidebar{width:200px;flex-shrink:0;background:#fff;border-right:1px solid #E2E5EA;padding:12px 0}
 .sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;color:#9098A9;padding:8px 14px 4px}
-.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}.maq-group-header{display:block;width:100%;padding:10px 14px;font-size:12px;font-weight:700;text-transform:uppercase;color:#555;letter-spacing:0.05em;margin-top:4px;border:none;background:transparent;cursor:pointer;text-align:left;border-left:3px solid transparent}.maq-group-header:hover{background:#f0f0f0}.maq-group-arrow{float:right;font-size:10px}.maq-sub{padding-left:24px!important}
+.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}.maq-section-header{display:block;width:100%;padding:10px 14px 4px;font-size:9px;font-weight:800;text-transform:uppercase;color:#1B6CA8;letter-spacing:0.12em;margin-top:10px;border-top:1px solid #e8ecf0}.maq-group-header{display:block;width:100%;padding:9px 14px;font-size:12px;font-weight:600;color:#444;letter-spacing:0.02em;margin-top:2px;border:none;background:transparent;cursor:pointer;text-align:left;border-left:3px solid transparent}.maq-group-header:hover{background:#f0f0f0}.maq-group-arrow{float:right;font-size:10px;color:#999}.maq-sub{padding-left:26px!important;font-size:11px!important;color:#666!important}
 .maq-btn:hover{background:#F7F8FA}
 .maq-btn.active{background:#E6F1FB;color:#1B6CA8;border-left-color:#1B6CA8;font-weight:700}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -111,6 +111,9 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
     <div class="maq-bar-name" id="maq-bar-name">Todas las maquinas</div>
   </div>
   <div class="maq-bar-icon"><span></span><span></span><span></span></div>
+</div>
+<div id="logo-splash" style="position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+  <img src="https://repuestos-severbon.netlify.app/logo.png" onerror="this.style.display='none'" style="width:280px;max-width:60vw;opacity:0.08;filter:grayscale(100%);transition:opacity 1.5s ease;">
 </div>
 <div class="maq-overlay" id="maq-overlay" onclick="closeMaqPanel()"></div>
 <div class="maq-panel" id="maq-panel">
@@ -164,6 +167,9 @@ var maqIdx = -1;
 var fam = 'todos';
 var cart = {};
 fetch('datos.json').then(function(r){return r.json();}).then(function(d){
+  // Desvanecer logo splash
+  var splash = document.getElementById('logo-splash');
+  if (splash) { setTimeout(function(){ splash.style.opacity='0'; setTimeout(function(){ splash.style.display='none'; }, 1500); }, 800); }
   DATA = d;
   renderMaqList();
   renderParts();
@@ -185,12 +191,20 @@ function toggleGrupo(cat) {
 function renderMaqList() {
   var html = '<button class="maq-btn' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaq(-1)">Todas las maquinas</button>';
 
-  // Bordeadora y Desmalezadora primero (sin grupo)
+  // Bordeadoras y Desmalezadoras
+  html += '<div class="maq-section-header">BORDEADORAS Y DESMALEZADORAS</div>';
+  //
   DATA.maquinas.forEach(function(m, i) {
     if (m.id === 'dsv52' || m.id === 'bp1000') {
       html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '</button>';
     }
   });
+
+  // Header Cortadoras
+  html += '<div class="maq-section-header">CORTADORAS DE CÉSPED</div>';
+
+  // Header Cortadoras mobile
+  html += '<div class="maq-section-header" style="padding:8px 16px;">CORTADORAS DE CÉSPED</div>';
 
   // Electricas desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
@@ -377,12 +391,25 @@ function descargar() {
 function openMaqPanel() {
   var html = '<button class="maq-panel-item' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaqMobile(-1)">Todas las maquinas</button>';
 
-  // Bordeadora y Desmalezadora primero
-  DATA.maquinas.forEach(function(m, i) {
-    if (m.id === 'dsv52' || m.id === 'bp1000') {
-      html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
-    }
-  });
+  // Bordeadora y Desmalezadora primero con header
+  var tieneEspeciales = DATA.maquinas.some(function(m) { return m.id === 'dsv52' || m.id === 'bp1000'; });
+  if (tieneEspeciales) {
+    html += '<div class="maq-section-header" style="padding:8px 16px;">BORDEADORAS Y DESMALEZADORAS</div>';
+    DATA.maquinas.forEach(function(m, i) {
+      if (m.id === 'dsv52' || m.id === 'bp1000') {
+        html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+      }
+    });
+  }
+
+  // Header cortadoras
+  var tieneCorta = DATA.maquinas.some(function(m) { return m.cat === 'Electrica' || m.cat === 'Naftera'; });
+  if (tieneCorta) {
+    html += '<div class="maq-section-header" style="padding:8px 16px;">CORTADORAS DE CÉSPED</div>';
+  }
+
+  // Header Cortadoras
+  html += '<div class="maq-section-header">CORTADORAS DE CÉSPED</div>';
 
   // Electricas desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
