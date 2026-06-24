@@ -133,10 +133,16 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
       <input type="text" id="q" placeholder="Buscar por nombre o codigo..." oninput="render()">
       <div class="fbtn-row">
         <button class="fbtn on" id="fb-todos" onclick="setFam('todos')">Todos</button>
-        <button class="fbtn" id="fb-motor" onclick="setFam('motor')">Motor</button>
-        <button class="fbtn" id="fb-transmision" onclick="setFam('transmision')">Transmision</button>
-        <button class="fbtn" id="fb-corte" onclick="setFam('corte')">Corte</button>
-        <button class="fbtn" id="fb-kit" onclick="setFam('kit')">Kits</button>
+        <button class="fbtn" onclick="setFam('Motor')">Motor</button>
+        <button class="fbtn" onclick="setFam('Cuchillas')">Cuchillas</button>
+        <button class="fbtn" onclick="setFam('Carcasas')">Carcasas</button>
+        <button class="fbtn" onclick="setFam('Ruedas')">Ruedas</button>
+        <button class="fbtn" onclick="setFam('Filtros de aire')">Filtros de aire</button>
+        <button class="fbtn" onclick="setFam('Manijas')">Manijas</button>
+        <button class="fbtn" onclick="setFam('Bolsa recolectora')">Bolsa recolectora</button>
+        <button class="fbtn" onclick="setFam('Tapa trasera')">Tapa trasera</button>
+        <button class="fbtn" onclick="setFam('Salida lateral')">Salida lateral</button>
+        <button class="fbtn" onclick="setFam('Capacitores')">Capacitores</button>
       </div>
     </div>
     <div class="grid" id="grid"></div>
@@ -204,7 +210,6 @@ function renderMaqList() {
   html += '<div class="maq-section-header">CORTADORAS DE CÉSPED</div>';
 
   // Header Cortadoras mobile
-  html += '<div class="maq-section-header" style="padding:8px 16px;">CORTADORAS DE CÉSPED</div>';
 
   // Electricas desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
@@ -245,7 +250,10 @@ function selMaq(i) {
 
 function setFam(f) {
   fam = f;
-  document.querySelectorAll('.fbtn').forEach(function(b) { b.classList.remove('on'); });
+  document.querySelectorAll('.fbtn').forEach(function(b) {
+    b.classList.remove('on');
+    if (b.getAttribute('onclick') === "setFam('" + f + "')") b.classList.add('on');
+  });
   var el = document.getElementById('fb-' + f);
   if (el) el.classList.add('on');
   render();
@@ -257,7 +265,7 @@ function render() {
     ? DATA.maquinas.reduce(function(acc, m) { return acc.concat(m.repuestos); }, [])
     : DATA.maquinas[maqIdx].repuestos;
   var items = CAT.filter(function(r) {
-    return (fam === 'todos' || r.fam === fam) && (!q || r.nom.toLowerCase().indexOf(q) >= 0 || r.cod.indexOf(q) >= 0);
+    return (fam === 'todos' || r.cat === fam) && (!q || r.nom.toLowerCase().indexOf(q) >= 0 || r.cod.indexOf(q) >= 0);
   });
   var html = '';
   items.forEach(function(r) {
@@ -409,7 +417,6 @@ function openMaqPanel() {
   }
 
   // Header Cortadoras
-  html += '<div class="maq-section-header">CORTADORAS DE CÉSPED</div>';
 
   // Electricas desplegable
   if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
