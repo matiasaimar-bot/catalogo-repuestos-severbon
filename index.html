@@ -394,6 +394,7 @@ function descargar() {
     filas += '<td style="padding:8px 12px;border-bottom:1px solid #eee">' + i.r.nom + '</td>';
     filas += '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;font-weight:700">' + i.qty + '</td></tr>';
   });
+  var nroPedido = 'PED-' + new Date().getFullYear().toString().slice(-2) + ('0'+(new Date().getMonth()+1)).slice(-2) + ('0'+new Date().getDate()).slice(-2) + '-' + Math.floor(Math.random()*9000+1000);
   var doc = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Solicitud ' + nroPedido + ' - ' + nom + '</title>';
   doc += '<style>body{font-family:Arial,sans-serif;margin:40px}h1{font-size:20px;margin-bottom:4px}';
   doc += 'table{width:100%;border-collapse:collapse;margin-top:20px}';
@@ -401,7 +402,6 @@ function descargar() {
   doc += '.datos{background:#f7f8fa;padding:14px;border-radius:8px;margin:16px 0;font-size:13px;line-height:1.8}';
   doc += '.nota{margin-top:24px;font-size:12px;color:#999;border-top:1px solid #eee;padding-top:16px}</style>';
   doc += '</head><body>';
-  var nroPedido = 'PED-' + new Date().getFullYear().toString().slice(-2) + ('0'+(new Date().getMonth()+1)).slice(-2) + ('0'+new Date().getDate()).slice(-2) + '-' + Math.floor(Math.random()*9000+1000);
   doc += '<h1>Solicitud de repuestos - Severbon</h1>';
   doc += '<p style="color:#666;font-size:13px">N\u00b0 Pedido: <strong>' + nroPedido + '</strong> &nbsp;|&nbsp; Fecha: ' + fecha + ' &nbsp;|&nbsp; Raz\u00f3n Social: <strong>' + nom + '</strong></p>';
   doc += '<div class="datos">Razon Social: ' + nom + '<br>CUIT: ' + cuit + '<br>Telefono: ' + tel + '<br>Email: ' + email + '</div>';
