@@ -209,7 +209,7 @@ cargarDesdeSupa().then(function(d){
   if (splash) { setTimeout(function(){ splash.style.opacity='0'; setTimeout(function(){ splash.style.display='none'; }, 1500); }, 800); }
   DATA = d;
   renderMaqList();
-  renderParts();
+  render();
 });
 
 // Grupos desplegables abiertos/cerrados
