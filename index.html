@@ -17,7 +17,8 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .cart-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:7px 16px;border:none;border-radius:6px;background:#fff;color:#29ABE2;cursor:pointer}
 .toolbar{padding:10px 16px;display:flex;gap:7px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #E2E5EA}
 .toolbar input{flex:1;min-width:150px;font-size:12px;padding:7px 10px;border:1px solid #E2E5EA;border-radius:5px;outline:none}
-.fbtn{font-size:11px;padding:6px 12px;border:1px solid #E2E5EA;border-radius:5px;background:#fff;cursor:pointer}
+.fbtn{font-size:11px;padding:6px 12px;border:1px solid #E2E5EA;border-radius:5px;background:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s,border-color .15s}
+.fbtn:hover{background:#F7F8FA;border-color:#c7ccd4}
 .fbtn.on{background:#E6F1FB;color:#1B6CA8;border-color:#1B6CA8;font-weight:700}
 .maq-bar{display:none;align-items:center;justify-content:space-between;background:#EAF4FC;border-bottom:1px solid #B5D4F4;padding:8px 14px;cursor:pointer}
 .maq-bar-label{font-size:10px;color:#1B6CA8;text-transform:uppercase;letter-spacing:.3px}
@@ -34,8 +35,7 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 #maq-panel-list{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding-bottom:40px}.maq-panel-item{display:block;width:100%;text-align:left;padding:15px 16px;border:none;background:transparent;font-size:14px;cursor:pointer;border-bottom:1px solid #E2E5EA;color:#1A1D23}
 .maq-panel-item.active{background:#E6F1FB;color:#1B6CA8;font-weight:700}
 .maq-panel-item:last-child{border-bottom:none}
-.fbtn-row{display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.fbtn-row::-webkit-scrollbar{display:none}
+.fbtn-row{display:flex;gap:7px;flex-wrap:wrap}
 @media(max-width:600px){
   .sidebar{display:none}
   .maq-bar{display:flex}
@@ -113,7 +113,7 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
   <div class="maq-bar-icon"><span></span><span></span><span></span></div>
 </div>
 <div id="logo-splash" style="position:fixed;inset:0;z-index:-1;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-  <img src="https://repuestos-severbon.netlify.app/logo.png" onerror="this.style.display='none'" style="width:280px;max-width:60vw;opacity:0.08;filter:grayscale(100%);">
+  <img id="logo-splash-img" alt="" style="width:280px;max-width:60vw;opacity:0.08;filter:grayscale(100%);">
 </div>
 <div class="maq-overlay" id="maq-overlay" onclick="closeMaqPanel()"></div>
 <div class="maq-panel" id="maq-panel">
@@ -178,16 +178,18 @@ var DATA = null;
 var maqIdx = -1;
 var fam = 'todos';
 var cart = {};
+
+// El watermark de fondo reutiliza el logo ya embebido en el header (no depende de un archivo externo)
+document.getElementById('logo-splash-img').src = document.querySelector('.logo-s img').src;
+
 fetch('datos.json').then(function(r){return r.json();}).then(function(d){
-  // Desvanecer logo splash
-  // El logo queda como marca de agua permanente en el fondo (ver #logo-splash)
   DATA = d;
   renderMaqList();
   render();
 });
 
 // Grupos desplegables abiertos/cerrados
-var gruposAbiertos = { Electrica: false, Naftera: false, Ventilador: false, BordDesm: false };
+var gruposAbiertos = { Electrica: false, Naftera: false, Ventilador: false, BordDesm: false, Cortadoras: false };
 
 function toggleGrupo(cat) {
   gruposAbiertos[cat] = !gruposAbiertos[cat];
@@ -231,36 +233,37 @@ function renderMaqList() {
   }
 
   // Header Cortadoras
-  html += '<div class="maq-section-header">CORTADORAS DE CÉSPED</div>';
-  html += '<button class="maq-btn' + (maqIdx === 'cortadoras' ? ' active' : '') + '" onclick="selMaq(\'cortadoras\')">Todas las cortadoras</button>';
+  var abiertaC = gruposAbiertos.Cortadoras;
+  html += '<button class="maq-section-header" onclick="toggleGrupo(&quot;Cortadoras&quot;)">CORTADORAS DE CÉSPED <span class="maq-group-arrow">' + (abiertaC ? '&#9650;' : '&#9660;') + '</span></button>';
+  if (abiertaC) {
+    html += '<button class="maq-btn' + (maqIdx === 'cortadoras' ? ' active' : '') + '" onclick="selMaq(\'cortadoras\')">Todas las cortadoras</button>';
 
-  // Header Cortadoras mobile
-
-  // Electricas desplegable
-  if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
-    var abiertaE = gruposAbiertos.Electrica;
-    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Electrica&quot;)">' +
-      'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '&#9650;' : '&#9660;') + '</span></button>';
-    if (abiertaE) {
-      DATA.maquinas.forEach(function(m, i) {
-        if (m.cat === 'Electrica' && (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0)) {
-          html += '<button class="maq-btn maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
-        }
-      });
+    // Electricas desplegable
+    if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
+      var abiertaE = gruposAbiertos.Electrica;
+      html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Electrica&quot;)">' +
+        'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '&#9650;' : '&#9660;') + '</span></button>';
+      if (abiertaE) {
+        DATA.maquinas.forEach(function(m, i) {
+          if (m.cat === 'Electrica' && (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0)) {
+            html += '<button class="maq-btn maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
+          }
+        });
+      }
     }
-  }
 
-  // Nafteras desplegable
-  if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
-    var abiertaN = gruposAbiertos.Naftera;
-    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Naftera&quot;)">' +
-      'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '&#9650;' : '&#9660;') + '</span></button>';
-    if (abiertaN) {
-      DATA.maquinas.forEach(function(m, i) {
-        if (m.cat === 'Naftera' && (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0)) {
-          html += '<button class="maq-btn maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
-        }
-      });
+    // Nafteras desplegable
+    if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
+      var abiertaN = gruposAbiertos.Naftera;
+      html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Naftera&quot;)">' +
+        'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '&#9650;' : '&#9660;') + '</span></button>';
+      if (abiertaN) {
+        DATA.maquinas.forEach(function(m, i) {
+          if (m.cat === 'Naftera' && (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0)) {
+            html += '<button class="maq-btn maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
+          }
+        });
+      }
     }
   }
 
@@ -311,6 +314,7 @@ function render() {
   var items = CAT.filter(function(r) {
     return (fam === 'todos' || r.cat === fam) && (!q || r.nom.toLowerCase().indexOf(q) >= 0 || r.cod.indexOf(q) >= 0);
   });
+  items.sort(function(a, b) { return a.nom.localeCompare(b.nom, 'es', {sensitivity: 'base'}); });
   var html = '';
   items.forEach(function(r) {
     var cartItem = cart[r.cod];
@@ -481,37 +485,38 @@ function openMaqPanel() {
   // Header cortadoras
   var tieneCorta = DATA.maquinas.some(function(m) { return m.cat === 'Electrica' || m.cat === 'Naftera'; });
   if (tieneCorta) {
-    html += '<div class="maq-section-header" style="padding:8px 16px;">CORTADORAS DE CÉSPED</div>';
-    html += '<button class="maq-panel-item' + (maqIdx === 'cortadoras' ? ' active' : '') + '" onclick="selMaqMobile(&quot;cortadoras&quot;)">Todas las cortadoras</button>';
-  }
+    var abiertaCm = gruposAbiertos.Cortadoras;
+    html += '<button class="maq-section-header" style="padding:8px 16px;" onclick="toggleGrupoMobile(&quot;Cortadoras&quot;)">CORTADORAS DE CÉSPED <span class="maq-group-arrow">' + (abiertaCm ? '&#9650;' : '&#9660;') + '</span></button>';
+    if (abiertaCm) {
+      html += '<button class="maq-panel-item' + (maqIdx === 'cortadoras' ? ' active' : '') + '" onclick="selMaqMobile(&quot;cortadoras&quot;)">Todas las cortadoras</button>';
 
-  // Header Cortadoras
-
-  // Electricas desplegable
-  if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
-    var abiertaE = gruposAbiertos.Electrica;
-    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Electrica&quot;)">' +
-      'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '&#9650;' : '&#9660;') + '</span></button>';
-    if (abiertaE) {
-      DATA.maquinas.forEach(function(m, i) {
-        if (m.cat === 'Electrica') {
-          html += '<button class="maq-panel-item maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+      // Electricas desplegable
+      if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
+        var abiertaE = gruposAbiertos.Electrica;
+        html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Electrica&quot;)">' +
+          'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '&#9650;' : '&#9660;') + '</span></button>';
+        if (abiertaE) {
+          DATA.maquinas.forEach(function(m, i) {
+            if (m.cat === 'Electrica') {
+              html += '<button class="maq-panel-item maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+            }
+          });
         }
-      });
-    }
-  }
+      }
 
-  // Nafteras desplegable
-  if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
-    var abiertaN = gruposAbiertos.Naftera;
-    html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Naftera&quot;)">' +
-      'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '&#9650;' : '&#9660;') + '</span></button>';
-    if (abiertaN) {
-      DATA.maquinas.forEach(function(m, i) {
-        if (m.cat === 'Naftera') {
-          html += '<button class="maq-panel-item maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+      // Nafteras desplegable
+      if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
+        var abiertaN = gruposAbiertos.Naftera;
+        html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Naftera&quot;)">' +
+          'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '&#9650;' : '&#9660;') + '</span></button>';
+        if (abiertaN) {
+          DATA.maquinas.forEach(function(m, i) {
+            if (m.cat === 'Naftera') {
+              html += '<button class="maq-panel-item maq-sub' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+            }
+          });
         }
-      });
+      }
     }
   }
 
