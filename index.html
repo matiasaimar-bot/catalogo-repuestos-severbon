@@ -144,6 +144,11 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
         <button class="fbtn" onclick="setFam('Tapa trasera')">Tapa trasera</button>
         <button class="fbtn" onclick="setFam('Salida lateral')">Salida lateral</button>
         <button class="fbtn" onclick="setFam('Capacitores')">Capacitores</button>
+        <button class="fbtn" onclick="setFam('Palas')">Palas</button>
+        <button class="fbtn" onclick="setFam('Barral')">Barral</button>
+        <button class="fbtn" onclick="setFam('Florón')">Florón</button>
+        <button class="fbtn" onclick="setFam('Control')">Control</button>
+        <button class="fbtn" onclick="setFam('Accesorios')">Accesorios</button>
       </div>
     </div>
     <div class="grid" id="grid"></div>
@@ -414,6 +419,16 @@ function descargar() {
 
 function openMaqPanel() {
   var html = '<button class="maq-panel-item' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaqMobile(-1)">Todas las maquinas</button>';
+
+  // Ventiladores mobile
+  if (DATA.maquinas.some(function(m) { return m.cat === 'Ventilador'; })) {
+    html += '<div class="maq-section-header" style="padding:8px 16px;">VENTILADORES</div>';
+    DATA.maquinas.forEach(function(m, i) {
+      if (m.cat === 'Ventilador') {
+        html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+      }
+    });
+  }
 
   // Bordeadora y Desmalezadora primero con header
   var tieneEspeciales = DATA.maquinas.some(function(m) { return m.id === 'dsv52' || m.id === 'bp1000'; });
