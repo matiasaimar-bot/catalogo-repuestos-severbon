@@ -205,6 +205,16 @@ function renderMaqList() {
   var qm = qmEl ? qmEl.value.toLowerCase().trim() : '';
   var html = '<button class="maq-btn' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaq(-1)">Todas las maquinas</button>';
 
+  // Ventiladores
+  html += '<div class="maq-section-header">VENTILADORES DE TECHO</div>';
+  DATA.maquinas.forEach(function(m, i) {
+    if (m.cat === 'Ventilador') {
+      if (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0) {
+        html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
+      }
+    }
+  });
+
   // Bordeadoras y Desmalezadoras
   html += '<div class="maq-section-header">BORDEADORAS Y DESMALEZADORAS</div>';
   //
