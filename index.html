@@ -85,7 +85,7 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .layout{display:flex;min-height:calc(100vh - 110px)}
 .sidebar{width:200px;flex-shrink:0;background:#fff;border-right:1px solid #E2E5EA;padding:12px 0}
 .sidebar-title{font-size:10px;font-weight:700;text-transform:uppercase;color:#9098A9;padding:8px 14px 4px}
-.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}.maq-section-header{display:block;width:100%;padding:10px 14px 4px;font-size:9px;font-weight:800;text-transform:uppercase;color:#1B6CA8;letter-spacing:0.12em;margin-top:10px;border-top:1px solid #e8ecf0}.maq-group-header{display:block;width:100%;padding:9px 14px;font-size:12px;font-weight:600;color:#444;letter-spacing:0.02em;margin-top:2px;border:none;background:transparent;cursor:pointer;text-align:left;border-left:3px solid transparent}.maq-group-header:hover{background:#f0f0f0}.maq-group-arrow{float:right;font-size:10px;color:#999}.maq-sub{padding-left:26px!important;font-size:11px!important;color:#666!important}.maq-cod{display:block;font-size:10px;color:#9098A9;font-family:monospace;margin-top:1px}
+.maq-btn{display:block;width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12px;cursor:pointer;color:#1A1D23;border-left:3px solid transparent}.maq-section-header{display:block;width:100%;padding:10px 14px 4px;font-size:9px;font-weight:800;text-transform:uppercase;color:#1B6CA8;letter-spacing:0.12em;margin-top:10px;border-top:1px solid #e8ecf0;border-left:none;border-right:none;border-bottom:none;background:transparent;cursor:pointer;text-align:left}.maq-section-header .maq-group-arrow{color:#1B6CA8;font-size:9px}.maq-group-header{display:block;width:100%;padding:9px 14px;font-size:12px;font-weight:600;color:#444;letter-spacing:0.02em;margin-top:2px;border:none;background:transparent;cursor:pointer;text-align:left;border-left:3px solid transparent}.maq-group-header:hover{background:#f0f0f0}.maq-group-arrow{float:right;font-size:10px;color:#999}.maq-sub{padding-left:26px!important;font-size:11px!important;color:#666!important}.maq-cod{display:block;font-size:10px;color:#9098A9;font-family:monospace;margin-top:1px}
 .maq-btn:hover{background:#F7F8FA}
 .maq-btn.active{background:#E6F1FB;color:#1B6CA8;border-left-color:#1B6CA8;font-weight:700}
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -112,8 +112,8 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
   </div>
   <div class="maq-bar-icon"><span></span><span></span><span></span></div>
 </div>
-<div id="logo-splash" style="position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;pointer-events:none;">
-  <img src="https://repuestos-severbon.netlify.app/logo.png" onerror="this.style.display='none'" style="width:280px;max-width:60vw;opacity:0.08;filter:grayscale(100%);transition:opacity 1.5s ease;">
+<div id="logo-splash" style="position:fixed;inset:0;z-index:-1;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+  <img src="https://repuestos-severbon.netlify.app/logo.png" onerror="this.style.display='none'" style="width:280px;max-width:60vw;opacity:0.08;filter:grayscale(100%);">
 </div>
 <div class="maq-overlay" id="maq-overlay" onclick="closeMaqPanel()"></div>
 <div class="maq-panel" id="maq-panel">
@@ -134,21 +134,21 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
       <input type="text" id="q" placeholder="Buscar por nombre o codigo..." oninput="render()">
       <div class="fbtn-row">
         <button class="fbtn on" id="fb-todos" onclick="setFam('todos')">Todos</button>
-        <button class="fbtn" onclick="setFam('Motor')">Motor</button>
-        <button class="fbtn" onclick="setFam('Cuchillas')">Cuchillas</button>
-        <button class="fbtn" onclick="setFam('Carcasas')">Carcasas</button>
-        <button class="fbtn" onclick="setFam('Ruedas')">Ruedas</button>
-        <button class="fbtn" onclick="setFam('Filtros de aire')">Filtros de aire</button>
-        <button class="fbtn" onclick="setFam('Manijas')">Manijas</button>
-        <button class="fbtn" onclick="setFam('Bolsa recolectora')">Bolsa recolectora</button>
-        <button class="fbtn" onclick="setFam('Tapa trasera')">Tapa trasera</button>
-        <button class="fbtn" onclick="setFam('Salida lateral')">Salida lateral</button>
-        <button class="fbtn" onclick="setFam('Capacitores')">Capacitores</button>
-        <button class="fbtn" onclick="setFam('Palas')">Palas</button>
-        <button class="fbtn" onclick="setFam('Barral')">Barral</button>
-        <button class="fbtn" onclick="setFam('Florón')">Florón</button>
-        <button class="fbtn" onclick="setFam('Control')">Control</button>
         <button class="fbtn" onclick="setFam('Accesorios')">Accesorios</button>
+        <button class="fbtn" onclick="setFam('Barral')">Barral</button>
+        <button class="fbtn" onclick="setFam('Bolsa recolectora')">Bolsa recolectora</button>
+        <button class="fbtn" onclick="setFam('Capacitores')">Capacitores</button>
+        <button class="fbtn" onclick="setFam('Carcasas')">Carcasas</button>
+        <button class="fbtn" onclick="setFam('Control')">Control</button>
+        <button class="fbtn" onclick="setFam('Cuchillas')">Cuchillas</button>
+        <button class="fbtn" onclick="setFam('Filtros de aire')">Filtros de aire</button>
+        <button class="fbtn" onclick="setFam('Florón')">Florón</button>
+        <button class="fbtn" onclick="setFam('Manijas')">Manijas</button>
+        <button class="fbtn" onclick="setFam('Motor')">Motor</button>
+        <button class="fbtn" onclick="setFam('Palas')">Palas</button>
+        <button class="fbtn" onclick="setFam('Ruedas')">Ruedas</button>
+        <button class="fbtn" onclick="setFam('Salida lateral')">Salida lateral</button>
+        <button class="fbtn" onclick="setFam('Tapa trasera')">Tapa trasera</button>
       </div>
     </div>
     <div class="grid" id="grid"></div>
@@ -180,15 +180,14 @@ var fam = 'todos';
 var cart = {};
 fetch('datos.json').then(function(r){return r.json();}).then(function(d){
   // Desvanecer logo splash
-  var splash = document.getElementById('logo-splash');
-  if (splash) { setTimeout(function(){ splash.style.opacity='0'; setTimeout(function(){ splash.style.display='none'; }, 1500); }, 800); }
+  // El logo queda como marca de agua permanente en el fondo (ver #logo-splash)
   DATA = d;
   renderMaqList();
-  renderParts();
+  render();
 });
 
 // Grupos desplegables abiertos/cerrados
-var gruposAbiertos = { Electrica: false, Naftera: false };
+var gruposAbiertos = { Electrica: false, Naftera: false, Ventilador: false, BordDesm: false };
 
 function toggleGrupo(cat) {
   gruposAbiertos[cat] = !gruposAbiertos[cat];
@@ -206,28 +205,34 @@ function renderMaqList() {
   var html = '<button class="maq-btn' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaq(-1)">Todas las maquinas</button>';
 
   // Ventiladores
-  html += '<div class="maq-section-header">VENTILADORES DE TECHO</div>';
-  DATA.maquinas.forEach(function(m, i) {
-    if (m.cat === 'Ventilador') {
-      if (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0) {
-        html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
+  var abiertaV = gruposAbiertos.Ventilador;
+  html += '<button class="maq-section-header" onclick="toggleGrupo(&quot;Ventilador&quot;)">VENTILADORES DE TECHO <span class="maq-group-arrow">' + (abiertaV ? '&#9650;' : '&#9660;') + '</span></button>';
+  if (abiertaV) {
+    DATA.maquinas.forEach(function(m, i) {
+      if (m.cat === 'Ventilador') {
+        if (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0) {
+          html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
+        }
       }
-    }
-  });
+    });
+  }
 
   // Bordeadoras y Desmalezadoras
-  html += '<div class="maq-section-header">BORDEADORAS Y DESMALEZADORAS</div>';
-  //
-  DATA.maquinas.forEach(function(m, i) {
-    if (m.id === 'dsv52' || m.id === 'bp1000') {
-      if (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0) {
-        html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
+  var abiertaB = gruposAbiertos.BordDesm;
+  html += '<button class="maq-section-header" onclick="toggleGrupo(&quot;BordDesm&quot;)">BORDEADORAS Y DESMALEZADORAS <span class="maq-group-arrow">' + (abiertaB ? '&#9650;' : '&#9660;') + '</span></button>';
+  if (abiertaB) {
+    DATA.maquinas.forEach(function(m, i) {
+      if (m.id === 'dsv52' || m.id === 'bp1000') {
+        if (!qm || m.nom.toLowerCase().indexOf(qm) >= 0 || m.id.indexOf(qm) >= 0) {
+          html += '<button class="maq-btn' + (i === maqIdx ? ' active' : '') + '" onclick="selMaq(' + i + ')">' + m.nom + '<span class="maq-cod">' + m.id + '</span></button>';
+        }
       }
-    }
-  });
+    });
+  }
 
   // Header Cortadoras
   html += '<div class="maq-section-header">CORTADORAS DE CÉSPED</div>';
+  html += '<button class="maq-btn' + (maqIdx === 'cortadoras' ? ' active' : '') + '" onclick="selMaq(\'cortadoras\')">Todas las cortadoras</button>';
 
   // Header Cortadoras mobile
 
@@ -290,6 +295,16 @@ function render() {
         if (!vistos[r.cod]) { vistos[r.cod] = true; CAT.push(r); }
       });
     });
+  } else if (maqIdx === 'cortadoras') {
+    var vistosC = {};
+    CAT = [];
+    DATA.maquinas.forEach(function(m) {
+      if (m.cat === 'Electrica' || m.cat === 'Naftera') {
+        m.repuestos.forEach(function(r) {
+          if (!vistosC[r.cod]) { vistosC[r.cod] = true; CAT.push(r); }
+        });
+      }
+    });
   } else {
     CAT = DATA.maquinas[maqIdx].repuestos;
   }
@@ -317,9 +332,15 @@ document.getElementById('grid').addEventListener('click', function(e) {
 
 function toggle(cod, mi) {
   var r = null;
-  var idx = parseInt(mi);
+  var idx = (mi === 'cortadoras') ? 'cortadoras' : parseInt(mi);
   if (idx === -1) {
     DATA.maquinas.forEach(function(m) { m.repuestos.forEach(function(x) { if (x.cod === cod) r = x; }); });
+  } else if (idx === 'cortadoras') {
+    DATA.maquinas.forEach(function(m) {
+      if (m.cat === 'Electrica' || m.cat === 'Naftera') {
+        m.repuestos.forEach(function(x) { if (x.cod === cod) r = x; });
+      }
+    });
   } else {
     DATA.maquinas[idx].repuestos.forEach(function(x) { if (x.cod === cod) r = x; });
   }
@@ -432,29 +453,36 @@ function openMaqPanel() {
 
   // Ventiladores mobile
   if (DATA.maquinas.some(function(m) { return m.cat === 'Ventilador'; })) {
-    html += '<div class="maq-section-header" style="padding:8px 16px;">VENTILADORES</div>';
-    DATA.maquinas.forEach(function(m, i) {
-      if (m.cat === 'Ventilador') {
-        html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
-      }
-    });
+    var abiertaVm = gruposAbiertos.Ventilador;
+    html += '<button class="maq-section-header" style="padding:8px 16px;" onclick="toggleGrupoMobile(&quot;Ventilador&quot;)">VENTILADORES DE TECHO <span class="maq-group-arrow">' + (abiertaVm ? '&#9650;' : '&#9660;') + '</span></button>';
+    if (abiertaVm) {
+      DATA.maquinas.forEach(function(m, i) {
+        if (m.cat === 'Ventilador') {
+          html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+        }
+      });
+    }
   }
 
   // Bordeadora y Desmalezadora primero con header
   var tieneEspeciales = DATA.maquinas.some(function(m) { return m.id === 'dsv52' || m.id === 'bp1000'; });
   if (tieneEspeciales) {
-    html += '<div class="maq-section-header" style="padding:8px 16px;">BORDEADORAS Y DESMALEZADORAS</div>';
-    DATA.maquinas.forEach(function(m, i) {
-      if (m.id === 'dsv52' || m.id === 'bp1000') {
-        html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
-      }
-    });
+    var abiertaBm = gruposAbiertos.BordDesm;
+    html += '<button class="maq-section-header" style="padding:8px 16px;" onclick="toggleGrupoMobile(&quot;BordDesm&quot;)">BORDEADORAS Y DESMALEZADORAS <span class="maq-group-arrow">' + (abiertaBm ? '&#9650;' : '&#9660;') + '</span></button>';
+    if (abiertaBm) {
+      DATA.maquinas.forEach(function(m, i) {
+        if (m.id === 'dsv52' || m.id === 'bp1000') {
+          html += '<button class="maq-panel-item' + (i === maqIdx ? ' active' : '') + '" onclick="selMaqMobile(' + i + ')">' + m.nom + '</button>';
+        }
+      });
+    }
   }
 
   // Header cortadoras
   var tieneCorta = DATA.maquinas.some(function(m) { return m.cat === 'Electrica' || m.cat === 'Naftera'; });
   if (tieneCorta) {
     html += '<div class="maq-section-header" style="padding:8px 16px;">CORTADORAS DE CÉSPED</div>';
+    html += '<button class="maq-panel-item' + (maqIdx === 'cortadoras' ? ' active' : '') + '" onclick="selMaqMobile(&quot;cortadoras&quot;)">Todas las cortadoras</button>';
   }
 
   // Header Cortadoras
@@ -502,7 +530,7 @@ function closeMaqPanel() {
 }
 function selMaqMobile(i) {
   selMaq(i);
-  document.getElementById('maq-bar-name').textContent = i === -1 ? 'Todas las maquinas' : DATA.maquinas[i].nom;
+  document.getElementById('maq-bar-name').textContent = i === -1 ? 'Todas las maquinas' : (i === 'cortadoras' ? 'Cortadoras de césped' : DATA.maquinas[i].nom);
   closeMaqPanel();
 }
 </script>
