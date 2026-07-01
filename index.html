@@ -17,9 +17,19 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 .cart-btn{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:7px 16px;border:none;border-radius:6px;background:#fff;color:#29ABE2;cursor:pointer}
 .toolbar{padding:10px 16px;display:flex;gap:7px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #E2E5EA}
 .toolbar input{flex:1;min-width:150px;font-size:12px;padding:7px 10px;border:1px solid #E2E5EA;border-radius:5px;outline:none}
-.fbtn{font-size:11px;padding:6px 12px;border:1px solid #E2E5EA;border-radius:5px;background:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .15s,border-color .15s}
-.fbtn:hover{background:#F7F8FA;border-color:#c7ccd4}
-.fbtn.on{background:#E6F1FB;color:#1B6CA8;border-color:#1B6CA8;font-weight:700}
+.fam-dropdown{position:relative;min-width:210px}
+.fam-select-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;padding:8px 12px;border:1px solid #E2E5EA;border-radius:5px;background:#fff;color:#1A1D23;cursor:pointer}
+.fam-select-btn:hover{border-color:#c7ccd4}
+.fam-select-btn:focus{border-color:#1B6CA8;outline:none}
+.fam-arrow{font-size:9px;color:#9098A9}
+.fam-options{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #E2E5EA;border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.14);max-height:260px;overflow-y:auto;z-index:20;padding:4px}
+.fam-options.open{display:block}
+.fam-option{display:block;width:100%;text-align:left;padding:8px 10px;border:none;background:transparent;font-size:12px;cursor:pointer;border-radius:4px;color:#1A1D23}
+.fam-option:hover{background:#F7F8FA}
+.fam-option.on{background:#E6F1FB;color:#1B6CA8;font-weight:700}
+.fam-options::-webkit-scrollbar{width:8px}
+.fam-options::-webkit-scrollbar-thumb{background:#c7ccd4;border-radius:4px}
+.fam-options::-webkit-scrollbar-track{background:#f7f8fa}
 .maq-bar{display:none;align-items:center;justify-content:space-between;background:#EAF4FC;border-bottom:1px solid #B5D4F4;padding:8px 14px;cursor:pointer}
 .maq-bar-label{font-size:10px;color:#1B6CA8;text-transform:uppercase;letter-spacing:.3px}
 .maq-bar-name{font-size:13px;font-weight:700;color:#1B6CA8}
@@ -35,13 +45,12 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
 #maq-panel-list{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding-bottom:40px}.maq-panel-item{display:block;width:100%;text-align:left;padding:15px 16px;border:none;background:transparent;font-size:14px;cursor:pointer;border-bottom:1px solid #E2E5EA;color:#1A1D23}
 .maq-panel-item.active{background:#E6F1FB;color:#1B6CA8;font-weight:700}
 .maq-panel-item:last-child{border-bottom:none}
-.fbtn-row{display:flex;gap:7px;flex-wrap:wrap}
 @media(max-width:600px){
   .sidebar{display:none}
   .maq-bar{display:flex}
   .toolbar{flex-wrap:nowrap;flex-direction:column;gap:6px}
   .toolbar input{min-width:0;width:100%}
-  .fbtn{white-space:nowrap;flex-shrink:0}
+  .fam-dropdown{width:100%;min-width:0}
 }
 .grid{padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
 .card{background:#fff;border:1px solid #E2E5EA;border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
@@ -132,23 +141,29 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
   <div class="main">
     <div class="toolbar">
       <input type="text" id="q" placeholder="Buscar por nombre o codigo..." oninput="render()">
-      <div class="fbtn-row">
-        <button class="fbtn on" id="fb-todos" onclick="setFam('todos')">Todos</button>
-        <button class="fbtn" onclick="setFam('Accesorios')">Accesorios</button>
-        <button class="fbtn" onclick="setFam('Barral')">Barral</button>
-        <button class="fbtn" onclick="setFam('Bolsa recolectora')">Bolsa recolectora</button>
-        <button class="fbtn" onclick="setFam('Capacitores')">Capacitores</button>
-        <button class="fbtn" onclick="setFam('Carcasas')">Carcasas</button>
-        <button class="fbtn" onclick="setFam('Control')">Control</button>
-        <button class="fbtn" onclick="setFam('Cuchillas')">Cuchillas</button>
-        <button class="fbtn" onclick="setFam('Filtros de aire')">Filtros de aire</button>
-        <button class="fbtn" onclick="setFam('Florón')">Florón</button>
-        <button class="fbtn" onclick="setFam('Manijas')">Manijas</button>
-        <button class="fbtn" onclick="setFam('Motor')">Motor</button>
-        <button class="fbtn" onclick="setFam('Palas')">Palas</button>
-        <button class="fbtn" onclick="setFam('Ruedas')">Ruedas</button>
-        <button class="fbtn" onclick="setFam('Salida lateral')">Salida lateral</button>
-        <button class="fbtn" onclick="setFam('Tapa trasera')">Tapa trasera</button>
+      <div class="fam-dropdown" id="fam-dropdown">
+        <button type="button" class="fam-select-btn" id="fam-btn" onclick="toggleFamDropdown()">
+          <span id="fam-btn-label">Todos los repuestos</span>
+          <span class="fam-arrow">&#9660;</span>
+        </button>
+        <div class="fam-options" id="fam-options">
+          <button class="fam-option on" data-val="todos" onclick="setFam('todos')">Todos los repuestos</button>
+          <button class="fam-option" data-val="Accesorios" onclick="setFam('Accesorios')">Accesorios</button>
+          <button class="fam-option" data-val="Barral" onclick="setFam('Barral')">Barral</button>
+          <button class="fam-option" data-val="Bolsa recolectora" onclick="setFam('Bolsa recolectora')">Bolsa recolectora</button>
+          <button class="fam-option" data-val="Capacitores" onclick="setFam('Capacitores')">Capacitores</button>
+          <button class="fam-option" data-val="Carcasas" onclick="setFam('Carcasas')">Carcasas</button>
+          <button class="fam-option" data-val="Control" onclick="setFam('Control')">Control</button>
+          <button class="fam-option" data-val="Cuchillas" onclick="setFam('Cuchillas')">Cuchillas</button>
+          <button class="fam-option" data-val="Filtros de aire" onclick="setFam('Filtros de aire')">Filtros de aire</button>
+          <button class="fam-option" data-val="Florón" onclick="setFam('Florón')">Florón</button>
+          <button class="fam-option" data-val="Manijas" onclick="setFam('Manijas')">Manijas</button>
+          <button class="fam-option" data-val="Motor" onclick="setFam('Motor')">Motor</button>
+          <button class="fam-option" data-val="Palas" onclick="setFam('Palas')">Palas</button>
+          <button class="fam-option" data-val="Ruedas" onclick="setFam('Ruedas')">Ruedas</button>
+          <button class="fam-option" data-val="Salida lateral" onclick="setFam('Salida lateral')">Salida lateral</button>
+          <button class="fam-option" data-val="Tapa trasera" onclick="setFam('Tapa trasera')">Tapa trasera</button>
+        </div>
       </div>
     </div>
     <div class="grid" id="grid"></div>
@@ -204,10 +219,11 @@ function toggleGrupo(cat) {
 function renderMaqList() {
   var qmEl = document.getElementById('q-maq');
   var qm = qmEl ? qmEl.value.toLowerCase().trim() : '';
+  var buscando = !!qm;
   var html = '<button class="maq-btn' + (maqIdx === -1 ? ' active' : '') + '" onclick="selMaq(-1)">Todas las maquinas</button>';
 
   // Ventiladores
-  var abiertaV = gruposAbiertos.Ventilador;
+  var abiertaV = buscando || gruposAbiertos.Ventilador;
   html += '<button class="maq-section-header" onclick="toggleGrupo(&quot;Ventilador&quot;)">VENTILADORES DE TECHO <span class="maq-group-arrow">' + (abiertaV ? '&#9650;' : '&#9660;') + '</span></button>';
   if (abiertaV) {
     DATA.maquinas.forEach(function(m, i) {
@@ -220,7 +236,7 @@ function renderMaqList() {
   }
 
   // Bordeadoras y Desmalezadoras
-  var abiertaB = gruposAbiertos.BordDesm;
+  var abiertaB = buscando || gruposAbiertos.BordDesm;
   html += '<button class="maq-section-header" onclick="toggleGrupo(&quot;BordDesm&quot;)">BORDEADORAS Y DESMALEZADORAS <span class="maq-group-arrow">' + (abiertaB ? '&#9650;' : '&#9660;') + '</span></button>';
   if (abiertaB) {
     DATA.maquinas.forEach(function(m, i) {
@@ -233,14 +249,14 @@ function renderMaqList() {
   }
 
   // Header Cortadoras
-  var abiertaC = gruposAbiertos.Cortadoras;
+  var abiertaC = buscando || gruposAbiertos.Cortadoras;
   html += '<button class="maq-section-header" onclick="toggleGrupo(&quot;Cortadoras&quot;)">CORTADORAS DE CÉSPED <span class="maq-group-arrow">' + (abiertaC ? '&#9650;' : '&#9660;') + '</span></button>';
   if (abiertaC) {
     html += '<button class="maq-btn' + (maqIdx === 'cortadoras' ? ' active' : '') + '" onclick="selMaq(\'cortadoras\')">Todas las cortadoras</button>';
 
     // Electricas desplegable
     if (DATA.maquinas.some(function(m) { return m.cat === 'Electrica'; })) {
-      var abiertaE = gruposAbiertos.Electrica;
+      var abiertaE = buscando || gruposAbiertos.Electrica;
       html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Electrica&quot;)">' +
         'Eléctricas <span class="maq-group-arrow">' + (abiertaE ? '&#9650;' : '&#9660;') + '</span></button>';
       if (abiertaE) {
@@ -254,7 +270,7 @@ function renderMaqList() {
 
     // Nafteras desplegable
     if (DATA.maquinas.some(function(m) { return m.cat === 'Naftera'; })) {
-      var abiertaN = gruposAbiertos.Naftera;
+      var abiertaN = buscando || gruposAbiertos.Naftera;
       html += '<button class="maq-group-header" onclick="toggleGrupo(&quot;Naftera&quot;)">' +
         'Nafteras <span class="maq-group-arrow">' + (abiertaN ? '&#9650;' : '&#9660;') + '</span></button>';
       if (abiertaN) {
@@ -278,14 +294,26 @@ function selMaq(i) {
 
 function setFam(f) {
   fam = f;
-  document.querySelectorAll('.fbtn').forEach(function(b) {
-    b.classList.remove('on');
-    if (b.getAttribute('onclick') === "setFam('" + f + "')") b.classList.add('on');
+  document.querySelectorAll('.fam-option').forEach(function(b) {
+    b.classList.toggle('on', b.getAttribute('data-val') === f);
+    if (b.getAttribute('data-val') === f) {
+      document.getElementById('fam-btn-label').textContent = b.textContent;
+    }
   });
-  var el = document.getElementById('fb-' + f);
-  if (el) el.classList.add('on');
+  document.getElementById('fam-options').classList.remove('open');
   render();
 }
+
+function toggleFamDropdown() {
+  document.getElementById('fam-options').classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  var dd = document.getElementById('fam-dropdown');
+  if (dd && !dd.contains(e.target)) {
+    document.getElementById('fam-options').classList.remove('open');
+  }
+});
 
 function render() {
   var q = document.getElementById('q').value.toLowerCase();
@@ -314,7 +342,7 @@ function render() {
   var items = CAT.filter(function(r) {
     return (fam === 'todos' || r.cat === fam) && (!q || r.nom.toLowerCase().indexOf(q) >= 0 || r.cod.indexOf(q) >= 0);
   });
-  items.sort(function(a, b) { return a.nom.localeCompare(b.nom, 'es', {sensitivity: 'base'}); });
+  items.sort(function(a, b) { return String(a.nom || '').localeCompare(String(b.nom || ''), 'es', {sensitivity: 'base'}); });
   var html = '';
   items.forEach(function(r) {
     var cartItem = cart[r.cod];
