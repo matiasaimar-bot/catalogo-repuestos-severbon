@@ -53,8 +53,9 @@ body{font-family:Arial,sans-serif;background:#F7F8FA;color:#1A1D23;font-size:13p
   .fam-dropdown{width:100%;min-width:0}
 }
 .grid{padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-.card{background:#fff;border:1px solid #E2E5EA;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.2s ease,box-shadow 0.2s ease}
+.card{background:#fff;border:1px solid #E2E5EA;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.25s ease,box-shadow 0.25s ease}
 .card:hover{box-shadow:0 6px 20px rgba(0,0,0,.12);transform:scale(1.03);z-index:2;position:relative}
+.card.zoom-big{transform:scale(1.18)!important;box-shadow:0 12px 36px rgba(0,0,0,.18)!important;z-index:10!important;position:relative!important}
 .card.in-cart{border-color:#1B6CA8;border-width:2px}
 .card-img{height:130px;background:#F7F8FA;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
 .card-img img{max-width:100%;max-height:100%;object-fit:contain;padding:8px}
@@ -360,6 +361,30 @@ document.getElementById('grid').addEventListener('click', function(e) {
   var btn = e.target.closest('.add-btn');
   if (!btn) return;
   toggle(btn.dataset.cod, btn.dataset.mi);
+});
+
+// Zoom con delay en tarjetas
+var zoomTimer = null;
+document.addEventListener('mouseover', function(e) {
+  var card = e.target.closest('.card');
+  if (card) {
+    if (zoomTimer) return;
+    zoomTimer = setTimeout(function() {
+      card.classList.add('zoom-big');
+    }, 1000);
+    card._zoomTimer = zoomTimer;
+  }
+});
+document.addEventListener('mouseout', function(e) {
+  var card = e.target.closest('.card');
+  if (card) {
+    if (card._zoomTimer) {
+      clearTimeout(card._zoomTimer);
+      card._zoomTimer = null;
+    }
+    zoomTimer = null;
+    card.classList.remove('zoom-big');
+  }
 });
 
 function toggle(cod, mi) {
